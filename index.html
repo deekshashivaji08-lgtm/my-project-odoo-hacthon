@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TravelLoop Planner</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:Arial, sans-serif;
+            background:linear-gradient(to right,#4facfe,#00f2fe);
+            min-height:100vh;
+            padding:20px;
+        }
+
+        .container{
+            width:100%;
+            max-width:1000px;
+            margin:auto;
+        }
+
+        h1{
+            text-align:center;
+            color:white;
+            margin-bottom:30px;
+            font-size:40px;
+        }
+
+        .card{
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            margin-bottom:20px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .card h2{
+            margin-bottom:15px;
+            color:#333;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            margin-bottom:15px;
+            border:1px solid #ccc;
+            border-radius:5px;
+            font-size:16px;
+        }
+
+        button{
+            background:#007bff;
+            color:white;
+            border:none;
+            padding:12px 20px;
+            border-radius:5px;
+            cursor:pointer;
+            font-size:16px;
+        }
+
+        button:hover{
+            background:#0056b3;
+        }
+
+        .stop-box{
+            background:#f4f4f4;
+            padding:12px;
+            margin-top:10px;
+            border-radius:5px;
+        }
+
+        .budget-box{
+            background:#fff3cd;
+            padding:10px;
+            border-radius:5px;
+            margin-top:10px;
+        }
+
+        .total{
+            background:#d4edda;
+            padding:12px;
+            border-radius:5px;
+            margin-top:15px;
+            font-weight:bold;
+            font-size:18px;
+        }
+
+        #output h3{
+            margin-top:20px;
+            margin-bottom:10px;
+            color:#333;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🌍 TravelLoop Planner</h1>
+
+    <!-- CREATE TRIP -->
+
+    <div class="card">
+
+        <h2>Create Trip</h2>
+
+        <input type="text" id="tripName" placeholder="Enter Trip Name">
+
+        <input type="date" id="startDate">
+
+        <input type="date" id="endDate">
+
+    </div>
+
+    <!-- ADD STOP -->
+
+    <div class="card">
+
+        <h2>Add Stop</h2>
+
+        <input type="text" id="cityName" placeholder="Enter City Name">
+
+        <input type="number" id="days" placeholder="Number of Days">
+
+        <input type="text" id="hotelName" placeholder="Hotel Name">
+
+        <button onclick="addStop()">Add Stop</button>
+
+    </div>
+
+    <!-- ADD BUDGET -->
+
+    <div class="card">
+
+        <h2>Add Budget</h2>
+
+        <input type="text" id="budgetCategory" placeholder="Budget Category">
+
+        <input type="number" id="budgetAmount" placeholder="Budget Amount">
+
+        <button onclick="addBudget()">Add Budget</button>
+
+    </div>
+
+    <!-- PACKING LIST -->
+
+    <div class="card">
+
+        <h2>Packing List</h2>
+
+        <input type="text" id="packingItem" placeholder="Packing Item">
+
+        <button onclick="addPackingItem()">Add Packing Item</button>
+
+    </div>
+
+    <!-- NOTES -->
+
+    <div class="card">
+
+        <h2>Notes</h2>
+
+        <input type="text" id="noteText" placeholder="Enter Note">
+
+        <button onclick="addNote()">Add Note</button>
+
+    </div>
+
+    <!-- DISPLAY -->
+
+    <div class="card">
+
+        <h2>Trip Summary</h2>
+
+        <div id="output">
+
+            <p>No trip created yet.</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    let stops = [];
+
+    let budgets = [];
+
+    let packingItems = [];
+
+    let notes = [];
+
+    // ADD STOP
+
+    function addStop(){
+
+        let city = document.getElementById("cityName").value;
+
+        let days = document.getElementById("days").value;
+
+        let hotel = document.getElementById("hotelName").value;
+
+        if(city === "" || days === "" || hotel === ""){
+
+            alert("Please fill all stop details");
+
+            return;
+        }
+
+        let stop = {
+
+            city: city,
+
+            days: days,
+
+            hotel: hotel
+        };
+
+        stops.push(stop);
+
+        document.getElementById("cityName").value = "";
+
+        document.getElementById("days").value = "";
+
+        document.getElementById("hotelName").value = "";
+
+        displayTrip();
+    }
+
+    // ADD BUDGET
+
+    function addBudget(){
+
+        let category = document.getElementById("budgetCategory").value;
+
+        let amount = document.getElementById("budgetAmount").value;
+
+        if(category === "" || amount === ""){
+
+            alert("Please fill budget details");
+
+            return;
+        }
+
+        let budget = {
+
+            category: category,
+
+            amount: Number(amount)
+        };
+
+        budgets.push(budget);
+
+        document.getElementById("budgetCategory").value = "";
+
+        document.getElementById("budgetAmount").value = "";
+
+        displayTrip();
+    }
+
+    // ADD PACKING ITEM
+
+    function addPackingItem(){
+
+        let item = document.getElementById("packingItem").value;
+
+        if(item === ""){
+
+            alert("Please enter packing item");
+
+            return;
+        }
+
+        packingItems.push(item);
+
+        document.getElementById("packingItem").value = "";
+
+        displayTrip();
+    }
+
+    // ADD NOTE
+
+    function addNote(){
+
+        let note = document.getElementById("noteText").value;
+
+        if(note === ""){
+
+            alert("Please enter note");
+
+            return;
+        }
+
+        notes.push(note);
+
+        document.getElementById("noteText").value = "";
+
+        displayTrip();
+    }
+
+    // DISPLAY TRIP
+
+    function displayTrip(){
+
+        let tripName = document.getElementById("tripName").value;
+
+        let startDate = document.getElementById("startDate").value;
+
+        let endDate = document.getElementById("endDate").value;
+
+        let output = "";
+
+        output += `
+            <h2>${tripName}</h2>
+
+            <p><b>Travel Dates:</b> ${startDate} to ${endDate}</p>
+        `;
+
+        // STOPS
+
+        output += `<h3>📍 Stops</h3>`;
+
+        if(stops.length === 0){
+
+            output += `<p>No stops added.</p>`;
+        }
+
+        stops.forEach(function(stop){
+
+            output += `
+                <div class="stop-box">
+
+                    <b>City:</b> ${stop.city}<br>
+
+                    <b>Days:</b> ${stop.days}<br>
+
+                    <b>Hotel:</b> ${stop.hotel}
+
+                </div>
+            `;
+        });
+
+        // BUDGET
+
+        output += `<h3>💰 Budget</h3>`;
+
+        let totalBudget = 0;
+
+        if(budgets.length === 0){
+
+            output += `<p>No budget added.</p>`;
+        }
+
+        budgets.forEach(function(budget){
+
+            output += `
+                <div class="budget-box">
+
+                    ${budget.category}: ₹${budget.amount}
+
+                </div>
+            `;
+
+            totalBudget += budget.amount;
+        });
+
+        output += `
+            <div class="total">
+
+                Total Budget: ₹${totalBudget}
+
+            </div>
+        `;
+
+        // PACKING
+
+        output += `<h3>🎒 Packing List</h3>`;
+
+        if(packingItems.length === 0){
+
+            output += `<p>No packing items added.</p>`;
+        }
+
+        packingItems.forEach(function(item){
+
+            output += `
+                ✔ ${item}<br>
+            `;
+        });
+
+        // NOTES
+
+        output += `<h3>📝 Notes</h3>`;
+
+        if(notes.length === 0){
+
+            output += `<p>No notes added.</p>`;
+        }
+
+        notes.forEach(function(note){
+
+            output += `
+                • ${note}<br>
+            `;
+        });
+
+        document.getElementById("output").innerHTML = output;
+    }
+
+</script>
+
+</body>
+
+</html>
